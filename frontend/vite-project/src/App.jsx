@@ -1,9 +1,16 @@
 import React from 'react'
-
+import {Route, Routes} from "react-router-dom";
+import Home from "./pages/HomePage";
+import NotePage from "./pages/Note";
+import Create from "./pages/CreatePAge";
 const App = () => {
   return (
     <div>
-      
+      <Routes>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/note/:id' element={<NotePage/>}/>
+        <Route path='/create' element={<Create/>}/>
+      </Routes>
     </div>
   )
 }
