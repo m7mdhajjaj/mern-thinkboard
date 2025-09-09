@@ -1,9 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Edit, Trash2 } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-const NoteCard = ({ note }) => {
+const NoteCard = ({ note, onNoteDeleted }) => {
+  const navigate = useNavigate();
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -27,6 +29,7 @@ const NoteCard = ({ note }) => {
     try {
          await axios.delete(`http://localhost:3000/api/notes/${note._id}`);
         toast.success('Note deleted successfully!');
+        onNoteDeleted(note._id);
 
     } catch (error) {
         console.error('Error deleting note:', error);
@@ -34,25 +37,15 @@ const NoteCard = ({ note }) => {
     }
 };
 
-  const handleEdit = async (e) => {
+  const handleEdit = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Add edit functionality here
-    console.log('Edit note:', note._id);
-    try {
-        await axios.put(`http://localhost:3000/api/notes/${note._id}`, { title: note.title, content: note.content });
-        toast.success('Note edited successfully!');
-
-    } catch (error) {
-        console.error('Error editing note:', error);
-        toast.error('Failed to edit note. Please try again.');
-    }
-    
+    navigate(`/edit/${note._id}`);
   };
 
   return (
     <div className='bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] border border-gray-700/50 hover:border-green-500/30 backdrop-blur-sm'>
-      <Link to={`/notes/${note._id}`} className='block group'>
+      <Link to={`/note/${note._id}`} className='block group'>
         <h2 className='text-xl font-bold mb-3 text-white group-hover:text-green-400 transition-colors duration-300 line-clamp-2'>{note.title}</h2>
         <p className='text-gray-300 mb-4 line-clamp-3 leading-relaxed text-sm'>{note.content}</p>
       </Link>

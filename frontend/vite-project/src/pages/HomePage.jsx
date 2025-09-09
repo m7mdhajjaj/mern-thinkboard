@@ -9,6 +9,10 @@ const HomePage = () => {
     const [notes, setNotes] = useState([]);
     const[loading, setLoading] = useState(false);
 
+    const handleNoteDeleted = (deletedNoteId) => {
+        setNotes(prevNotes => prevNotes.filter(note => note._id !== deletedNoteId));
+    };
+
     useEffect(() => {
         const fetchNotes = async () => {
             try {
@@ -39,7 +43,11 @@ const HomePage = () => {
             ) : (
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4'>
                     {notes.map((note) => (
-                       <NoteCard key={note._id} note={note} />
+                       <NoteCard 
+                           key={note._id} 
+                           note={note} 
+                           onNoteDeleted={handleNoteDeleted}
+                       />
                     ))}
                 </div>
             )}
