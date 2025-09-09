@@ -1,7 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Edit, Trash2 } from 'lucide-react'
-
+import axios from 'axios'
+import toast from 'react-hot-toast'
 const NoteCard = ({ note }) => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -14,18 +15,39 @@ const NoteCard = ({ note }) => {
     });
   };
 
-  const handleDelete = (e) => {
+  const handleDelete = async (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Add delete functionality here
+    
+    if (!confirm('Are you sure you want to delete this note? This action cannot be undone.')) {
+        return;
+    }
+    
     console.log('Delete note:', note._id);
-  };
+    try {
+         await axios.delete(`http://localhost:3000/api/notes/${note._id}`);
+        toast.success('Note deleted successfully!');
 
-  const handleEdit = (e) => {
+    } catch (error) {
+        console.error('Error deleting note:', error);
+        toast.error('Failed to delete note. Please try again.');
+    }
+};
+
+  const handleEdit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     // Add edit functionality here
     console.log('Edit note:', note._id);
+    try {
+        await axios.put(`http://localhost:3000/api/notes/${note._id}`, { title: note.title, content: note.content });
+        toast.success('Note edited successfully!');
+
+    } catch (error) {
+        console.error('Error editing note:', error);
+        toast.error('Failed to edit note. Please try again.');
+    }
+    
   };
 
   return (
@@ -61,6 +83,7 @@ const NoteCard = ({ note }) => {
             title='Delete note'
           >
             <Trash2 className='w-4 h-4 group-hover:scale-110 transition-transform' />
+
           </button>
         </div>
       </div>
